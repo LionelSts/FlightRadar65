@@ -16,29 +16,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*
-        URL url = null;
-        try {
-            url = new URL("http://api.aviationstack.com/v1/flights?access_key=d686215dacae227bc179fd3bea0ba7ea&flight_icao=RNA409");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        HttpURLConnection con = null;
-        try {
-            con = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            con.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        try {
-            int status = con.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
         com.example.flightradar65.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
