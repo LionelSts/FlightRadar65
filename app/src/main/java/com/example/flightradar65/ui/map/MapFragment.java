@@ -40,13 +40,10 @@ public class MapFragment extends Fragment {
         Context context = requireActivity().getApplicationContext();
         // Initialize map fragment
         SupportMapFragment mapFragment= (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapPlanes);
-
         // Async map
         assert mapFragment != null;
         mapFragment.getMapAsync(googleMap -> {
             // When map is loaded
-
-
             RetrofitAPI service = RetrofitClient.createService(RetrofitAPI.class);
             Call<Dataset> callAsync = service.getApiResponse();
             callAsync.enqueue(new Callback<Dataset>() {
