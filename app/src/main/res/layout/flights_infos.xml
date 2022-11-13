@@ -68,21 +68,21 @@
         android:id="@+id/airframe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="335dp"
+        android:layout_marginStart="295dp"
         tools:text="@string/airplane_icao" />
 
     <TextView
         android:id="@+id/airframeString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="270dp"
+        android:layout_marginStart="230dp"
         tools:text="@string/airplane_icao_string" />
 
     <TextView
         android:id="@+id/altitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="330dp"
+        android:layout_marginStart="290dp"
         android:layout_marginTop="20dp"
         tools:text="@string/altitude" />
 
@@ -90,7 +90,7 @@
         android:id="@+id/altitudeString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="270dp"
+        android:layout_marginStart="230dp"
         android:layout_marginTop="20dp"
         tools:text="@string/altitude_string" />
 

@@ -1,6 +1,5 @@
 package com.example.flightradar65.ui.dashboard;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flightradar65.R;
-
-import java.util.Random;
+import com.example.flightradar65.data.Dataset;
 
 public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetriever.ViewHolder> {
-    private Random random;
-    public FlightsInfoRetriever(int seed, Context context) {
-        this.random = new Random(seed);
+    private Dataset mDataset;
+    public FlightsInfoRetriever() {
     }
 
     @Override
@@ -32,35 +29,46 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
         return new ViewHolder(view);
     }
 
+    public void loadDataset(Dataset dataset){
+        this.mDataset = dataset;
+        notifyDataSetChanged();
+    }
+
     @Override
-    public void onBindViewHolder( ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         holder.flightNoString.setText(R.string.flight_no_string);
         holder.flightDepString.setText(R.string.departure_icao_string);
         holder.flightAirlineString.setText(R.string.airline_icao_string);
         holder.flightArrString.setText(R.string.arrival_icao_string);
         holder.flightAirframeString.setText(R.string.airplane_icao_string);
         holder.flightAltitudeString.setText(R.string.altitude_string);
-        /*
-        holder.flightDep.setText(String.valueOf(mDataset.getResponse().get(position).getDepIcao()));
-        holder.flightNo.setText(String.valueOf(mDataset.getResponse().get(position).getFlightIcao()));
-        holder.flightArr.setText(String.valueOf(mDataset.getResponse().get(position).getArrIcao()));
-        holder.flightAirline.setText(String.valueOf(mDataset.getResponse().get(position).getAirlineIcao()));
-        holder.flightAirframe.setText(String.valueOf(mDataset.getResponse().get(position).getAircraftIcao()));
-        holder.flightAltitude.setText(String.valueOf(mDataset.getResponse().get(position).getAlt()));*/
-        holder.flightDep.setText(String.valueOf(random.nextInt()));
-        holder.flightNo.setText(String.valueOf(random.nextInt()));
-        holder.flightArr.setText(String.valueOf(random.nextInt()));
-        holder.flightAirline.setText(String.valueOf(random.nextInt()));
-        holder.flightAirframe.setText(String.valueOf(random.nextInt()));
-        holder.flightAltitude.setText(String.valueOf(random.nextInt()));
+
+        if(mDataset == null){
+            holder.flightDep.setText(R.string.alias_departure);
+            holder.flightNo.setText(R.string.alias_flight);
+            holder.flightArr.setText(R.string.alias_arrival);
+            holder.flightAirline.setText(R.string.alias_airlines);
+            holder.flightAirframe.setText(R.string.alias_plane);
+            holder.flightAltitude.setText(R.string.alias_altitude);
+        }else{
+            holder.flightDep.setText(String.valueOf(mDataset.getResponse().get(position).getDepIcao()));
+            holder.flightNo.setText(String.valueOf(mDataset.getResponse().get(position).getFlightIcao()));
+            holder.flightArr.setText(String.valueOf(mDataset.getResponse().get(position).getArrIcao()));
+            holder.flightAirline.setText(String.valueOf(mDataset.getResponse().get(position).getAirlineIcao()));
+            holder.flightAirframe.setText(String.valueOf(mDataset.getResponse().get(position).getAircraftIcao()));
+            holder.flightAltitude.setText(String.valueOf(mDataset.getResponse().get(position).getAlt()));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        if(mDataset == null){
+            return 10;
+        }
+        return mDataset.getResponse().size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView flightNo;
         public final TextView flightDep;
         public final TextView flightNoString;
@@ -90,6 +98,7 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
             flightAltitudeString = view.findViewById(R.id.altitudeString);
         }
 
+        @NonNull
         @Override
         public String toString() {
             return super.toString() + " '" + flightNo.getText() + "'";

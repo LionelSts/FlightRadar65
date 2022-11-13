@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "continent",
         "lat",
         "lng",
+        "city",
         "timezone"
 })
 
@@ -20,6 +21,8 @@ public class Geo {
     private String countryCode;
     @JsonProperty("country")
     private String country;
+    @JsonProperty("city")
+    private String city;
     @JsonProperty("continent")
     private String continent;
     @JsonProperty("lat")
@@ -47,6 +50,14 @@ public class Geo {
     @JsonProperty("country")
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    @JsonProperty("city")
+    public String getCity() { return city; }
+
+    @JsonProperty("city")
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @JsonProperty("continent")

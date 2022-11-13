@@ -18,4 +18,11 @@
     <string name="altitude_string">Altitude :</string>
     <string name="airplane_icao">PLANE</string>
     <string name="airplane_icao_string">Airplane :</string>
+
+    <string name="alias_departure">DOH</string>
+    <string name="alias_arrival">CDG</string>
+    <string name="alias_plane">CS-300</string>
+    <string name="alias_airlines">FLR</string>
+    <string name="alias_flight">FR650</string>
+    <string name="alias_altitude">0</string>
 </resources>
