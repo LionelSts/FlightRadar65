@@ -96,9 +96,6 @@ public class DashboardFragment extends Fragment {
         CharSequence query = searchView.getQuery();
         Call<Dataset> callAsync;
         switch (category){
-            case "No filter":
-                callAsync = service.getApiResponse();
-                break;
             case "ICAO24 Hex address":
                 callAsync = service.getApiResponseHex(query.toString());
                 break;
