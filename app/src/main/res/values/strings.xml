@@ -3,4 +3,26 @@
     <string name="title_account">Account</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_map">Map</string>
+    <string name="reload">Reload</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="search">Search</string>
+    <string name="flight_number">XX0000</string>
+    <string name="flight_no_string">Flight no.</string>
+    <string name="airline_icao">XXX</string>
+    <string name="airline_icao_string">Airline :</string>
+    <string name="departure_icao">XXX</string>
+    <string name="departure_icao_string">Departure :</string>
+    <string name="arrival_icao_string">Arrival :</string>
+    <string name="arrival_icao">XXX</string>
+    <string name="altitude">XXXXXX</string>
+    <string name="altitude_string">Altitude :</string>
+    <string name="airplane_icao">PLANE</string>
+    <string name="airplane_icao_string">Airplane :</string>
+
+    <string name="alias_departure">DOH</string>
+    <string name="alias_arrival">CDG</string>
+    <string name="alias_plane">CS-300</string>
+    <string name="alias_airlines">FLR</string>
+    <string name="alias_flight">FR650</string>
+    <string name="alias_altitude">0</string>
 </resources>
