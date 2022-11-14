@@ -38,14 +38,14 @@
         android:id="@+id/airlineIcao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="185dp"
+        android:layout_marginStart="180dp"
         tools:text="@string/airline_icao" />
 
     <TextView
         android:id="@+id/airlineIcaoString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
+        android:layout_marginStart="125dp"
         tools:text="@string/airline_icao_string" />
 
     <TextView

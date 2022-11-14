@@ -1,9 +1,11 @@
 package com.example.flightradar65.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,9 +35,18 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
         this.mDataset = dataset;
         notifyDataSetChanged();
     }
+    public String getFlagEmoji(String country){
+        int flagOffset = 0x1F1E6;
+        int asciiOffset = 0x41;
+        int firstChar = Character.codePointAt(country, 0) - asciiOffset + flagOffset;
+        int secondChar = Character.codePointAt(country, 1) - asciiOffset + flagOffset;
+        return new String(Character.toChars(firstChar))
+                + new String(Character.toChars(secondChar));
+    }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.flightNoString.setText(R.string.flight_no_string);
         holder.flightDepString.setText(R.string.departure_icao_string);
         holder.flightAirlineString.setText(R.string.airline_icao_string);
@@ -54,10 +65,18 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
             holder.flightDep.setText(String.valueOf(mDataset.getResponse().get(position).getDepIcao()));
             holder.flightNo.setText(String.valueOf(mDataset.getResponse().get(position).getFlightIcao()));
             holder.flightArr.setText(String.valueOf(mDataset.getResponse().get(position).getArrIcao()));
-            holder.flightAirline.setText(String.valueOf(mDataset.getResponse().get(position).getAirlineIcao()));
+            holder.flightAirline.setText(mDataset.getResponse().get(position).getAirlineIcao() + " " + getFlagEmoji(mDataset.getResponse().get(position).getFlag()));
             holder.flightAirframe.setText(String.valueOf(mDataset.getResponse().get(position).getAircraftIcao()));
             holder.flightAltitude.setText(String.valueOf(mDataset.getResponse().get(position).getAlt()));
         }
+
+        holder.flightDep.setOnClickListener(view -> Toast.makeText(holder.flightDep.getContext(), "clicked on " +holder.flightDep.getText(), Toast.LENGTH_LONG).show());
+
+        holder.flightNo.setOnClickListener(view -> Toast.makeText(holder.flightNo.getContext(), "clicked on " +holder.flightNo.getText(), Toast.LENGTH_LONG).show());
+
+        holder.flightArr.setOnClickListener(view -> Toast.makeText(holder.flightArr.getContext(), "clicked on " +holder.flightArr.getText(), Toast.LENGTH_LONG).show());
+
+        holder.flightAirline.setOnClickListener(view -> Toast.makeText(holder.flightAirline.getContext(), "clicked on " +mDataset.getResponse().get(position).getAirlineIcao() , Toast.LENGTH_LONG).show());
     }
 
     @Override

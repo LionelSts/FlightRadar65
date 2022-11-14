@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +29,7 @@ import retrofit2.Response;
 
 public class DashboardFragment extends Fragment {
     private SearchView searchView;
+    private DashboardViewModel viewModel;
     FlightsInfoRetriever recyclerAdapter;
     String[] categories = {"No filter","ICAO24 Hex address", "Aircraft Registration number", "Airline ICAO code", "Airline Country ISO 2 code", "Flight ICAO code-number", "Flight number", "Departure Airport ICAO code", "Arrival Airport ICAO code"};
     RetrofitAPI service = RetrofitClient.createService(RetrofitAPI.class);
@@ -38,6 +40,7 @@ public class DashboardFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         Context context = requireActivity().getApplicationContext();
+        viewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         Spinner spinnerCategories = view.findViewById(R.id.spinnerSearch);
@@ -46,7 +49,6 @@ public class DashboardFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerCategories.setAdapter(adapter);
-
         // When user select a List-Item.
         spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -129,13 +131,12 @@ public class DashboardFragment extends Fragment {
             public void onResponse(@NonNull Call<Dataset> call, @NonNull Response<Dataset> response) {
                 Dataset dataset = response.body();
                 recyclerAdapter.loadDataset(dataset);
-                Toast.makeText(context, "Data acquired", Toast.LENGTH_LONG).show();
+                viewModel.loadDataset(dataset);
             }
 
             @Override
             public void onFailure(@NonNull Call<Dataset> call, @NonNull Throwable throwable) {
                 System.out.println(throwable);
-                Toast.makeText(context, "Data not acquired", Toast.LENGTH_LONG).show();
             }
         });
 
