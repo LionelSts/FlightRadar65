@@ -6,31 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentTop="false"
-
     android:clipToPadding="true"
     tools:context=".ui.account.AccountFragment">
 
-
     <EditText
-        android:id="@+id/mdp"
+        android:id="@+id/editTextPassword"
         android:layout_width="388dp"
         android:layout_height="64dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="15dp"
-
-        android:drawableLeft="@android:drawable/ic_lock_idle_lock"
+        android:drawableStart="@android:drawable/ic_lock_idle_lock"
         android:drawablePadding="15dp"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:shadowColor="#9C27B0"
         android:textColorHighlight="#9C27B0"
         android:textColorLink="#9C27B0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/editTextUsername"
+        android:autofillHints="" />
     <TextView
         android:id="@+id/loginTitle"
         android:layout_width="0dp"
@@ -38,31 +34,32 @@
         android:layout_margin="50dp"
         android:layout_marginEnd="15dp"
         android:gravity="center"
-        android:text="Sign in"
-        android:textSize="30dp"
+        android:text="@string/sign_in"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/editTextUsername"
         android:layout_width="388dp"
         android:layout_height="64dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="15dp"
-
-        android:drawableLeft="@drawable/ic_baseline_person_24"
+        android:drawableStart="@drawable/ic_baseline_person_24"
         android:drawablePadding="15dp"
-        android:hint="Username"
+        android:hint="@string/username"
         android:shadowColor="#9C27B0"
         android:textColorHighlight="#9C27B0"
         android:textColorLink="#9C27B0"
-        app:layout_constraintBottom_toTopOf="@+id/mdp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/loginTitle"
+        android:autofillHints=""
+        android:inputType="text" />
 
     <Button
         android:id="@+id/loginButton"
@@ -72,11 +69,9 @@
         android:layout_marginTop="25dp"
         android:layout_marginEnd="15dp"
         android:width="200dp"
-        android:background="#9C27B0"
-        android:text="Log in"
-        app:cornerRadius="20dp"
+        android:text="@string/log_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mdp" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
