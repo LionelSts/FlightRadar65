@@ -80,14 +80,13 @@ public class DashboardFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerAdapter = new FlightsInfoRetriever();
         recyclerView.setAdapter(recyclerAdapter);
-
         Call<Dataset> callAsync = service.getApiResponse();
         callAsync.enqueue(new Callback<Dataset>() {
             @Override
             public void onResponse(@NonNull Call<Dataset> call, @NonNull Response<Dataset> response) {
                 Dataset dataset = response.body();
                 recyclerAdapter.loadDataset(dataset);
-                databaseReference.child("Dataset").child("v1").setValue(dataset);
+                // databaseReference.child("Dataset").child("v1").setValue(dataset);
                 Toast.makeText(context, "Data acquired", Toast.LENGTH_LONG).show();
             }
 
@@ -99,7 +98,7 @@ public class DashboardFragment extends Fragment {
             }
         });
         TextView textView = view.findViewById(R.id.textViewTest);
-        databaseReference.child("airports").orderByChild("ident").limitToFirst(1).get().addOnCompleteListener(task -> {
+        databaseReference.child("Airportsv2").child("0").child("LFPG").child("coordinates").get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
             }
