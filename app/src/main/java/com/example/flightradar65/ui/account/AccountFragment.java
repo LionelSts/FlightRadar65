@@ -14,16 +14,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.flightradar65.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountFragment extends Fragment {
     AccountViewModel accountViewModel;
+    private FirebaseAuth mAuth;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         accountViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
         Context context = requireActivity().getApplicationContext();
-
+        mAuth = FirebaseAuth.getInstance();
         Button loginButton = view.findViewById(R.id.loginButton);
         EditText login = view.findViewById(R.id.editTextUsername);
         EditText password = view.findViewById(R.id.editTextPassword);
