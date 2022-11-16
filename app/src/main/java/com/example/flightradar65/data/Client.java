@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "ip",
@@ -13,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "agent",
         "karma"
 })
-public class Client {
+public class Client implements Serializable {
 
     @JsonProperty("ip")
     private String ip;

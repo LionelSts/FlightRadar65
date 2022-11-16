@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,8 @@ import com.example.flightradar65.R;
 import com.example.flightradar65.RetrofitAPI;
 import com.example.flightradar65.RetrofitClient;
 import com.example.flightradar65.data.Dataset;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +36,10 @@ public class DashboardFragment extends Fragment {
     FlightsInfoRetriever recyclerAdapter;
     String[] categories = {"No filter","ICAO24 Hex address", "Aircraft Registration number", "Airline ICAO code", "Airline Country ISO 2 code", "Flight ICAO code-number", "Flight number", "Departure Airport ICAO code", "Arrival Airport ICAO code"};
     RetrofitAPI service = RetrofitClient.createService(RetrofitAPI.class);
+
+    // creating a variable for our Database
+    // Reference for Firebase.
+    DatabaseReference databaseReference;
 
     @Override
     public View onCreateView(
@@ -49,6 +56,9 @@ public class DashboardFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerCategories.setAdapter(adapter);
+
+        databaseReference = FirebaseDatabase.getInstance("https://my-project-app-366214-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/");
+
         // When user select a List-Item.
         spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -77,6 +87,7 @@ public class DashboardFragment extends Fragment {
             public void onResponse(@NonNull Call<Dataset> call, @NonNull Response<Dataset> response) {
                 Dataset dataset = response.body();
                 recyclerAdapter.loadDataset(dataset);
+                databaseReference.child("Dataset").child("v1").setValue(dataset);
                 Toast.makeText(context, "Data acquired", Toast.LENGTH_LONG).show();
             }
 
@@ -87,6 +98,16 @@ public class DashboardFragment extends Fragment {
 
             }
         });
+        TextView textView = view.findViewById(R.id.textViewTest);
+        databaseReference.child("airports").orderByChild("ident").limitToFirst(1).get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getContext(), "Got response", Toast.LENGTH_LONG).show();
+                textView.setText(String.valueOf(task.getResult()));
+            }
+        });
 
         return view;
     }
@@ -94,7 +115,6 @@ public class DashboardFragment extends Fragment {
     private void onItemSelectedHandler(AdapterView<?> adapterView, View view, int position, long id) {
         Adapter adapter = adapterView.getAdapter();
         String category = (String) adapter.getItem(position);
-        Context context = requireActivity().getApplicationContext();
         CharSequence query = searchView.getQuery();
         Call<Dataset> callAsync;
         switch (category){

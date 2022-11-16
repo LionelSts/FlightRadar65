@@ -15,6 +15,7 @@ import com.example.flightradar65.data.Dataset;
 
 public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetriever.ViewHolder> {
     private Dataset mDataset;
+
     public FlightsInfoRetriever() {
     }
 

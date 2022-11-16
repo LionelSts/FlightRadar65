@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "country_code",
@@ -15,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "timezone"
 })
 
-public class Geo {
+public class Geo implements Serializable {
 
     @JsonProperty("country_code")
     private String countryCode;

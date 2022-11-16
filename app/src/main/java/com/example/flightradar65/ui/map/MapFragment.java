@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,6 +22,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,9 +36,22 @@ public class MapFragment extends Fragment {
     String planeName = "Default Name";
     String planeDesc = "Default Desc";
 
+    // creating a variable for our
+    // Firebase Database.
+    FirebaseDatabase firebaseDatabase;
+
+    // creating a variable for our Database
+    // Reference for Firebase.
+    DatabaseReference databaseReference;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("DataSet");
+
         // Initialize view
         View view=inflater.inflate(R.layout.fragment_map, container, false);
         Context context = requireActivity().getApplicationContext();
@@ -82,6 +96,7 @@ public class MapFragment extends Fragment {
             });
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(planePos, 1));
+
             Button loadButton= view.findViewById(R.id.buttonReload);
             loadButton.setOnClickListener(view1 -> {
                 if(searchDataset != null){
@@ -103,9 +118,6 @@ public class MapFragment extends Fragment {
                                         .anchor(0.5F,0.5F));
 
                     }
-                    Toast.makeText(context, "Data acquired", Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(context, "Data not acquired", Toast.LENGTH_LONG).show();
                 }
             });
         });

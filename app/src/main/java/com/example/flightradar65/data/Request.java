@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "lang",
@@ -20,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "client"
 })
 
-public class Request {
+public class Request implements Serializable {
 
     @JsonProperty("lang")
     private String lang;
