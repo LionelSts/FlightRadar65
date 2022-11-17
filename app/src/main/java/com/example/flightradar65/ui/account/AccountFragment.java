@@ -1,11 +1,7 @@
 package com.example.flightradar65.ui.account;
 
-import static androidx.fragment.app.FragmentManager.TAG;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.flightradar65.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.concurrent.Executor;
 
 public class AccountFragment extends Fragment {
     AccountViewModel accountViewModel;
@@ -54,47 +45,36 @@ public class AccountFragment extends Fragment {
 
 
                 mAuth.createUserWithEmailAndPassword(login.getText().toString(), password.getText().toString())
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @SuppressLint("RestrictedApi")
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    updateUI(user);
-                                } else {
-                                    mAuth.signInWithEmailAndPassword(login.getText().toString(), password.getText().toString())
-                                            .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(requireActivity(), task -> {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                updateUI(user);
+                                Toast.makeText(context, "Account created.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                mAuth.signInWithEmailAndPassword(login.getText().toString(), password.getText().toString())
+                                        .addOnCompleteListener(requireActivity(), task1 -> {
+                                            if (task1.isSuccessful()) {
+                                                // Sign in success, update UI with the signed-in user's information
+                                                FirebaseUser user = mAuth.getCurrentUser();
+                                                Toast.makeText(context, "Login successfully.",
+                                                        Toast.LENGTH_SHORT).show();
+                                                updateUI(user);
+                                                view.findViewById(R.id.loginButton).setVisibility(View.GONE);
+                                                view.findViewById(R.id.editTextUsername).setVisibility(View.GONE);
+                                                view.findViewById(R.id.editTextPassword).setVisibility(View.GONE);
+                                                view.findViewById(R.id.disconnectButton).setVisibility(View.VISIBLE);
+                                                TextView a = view.findViewById(R.id.loginTitle);
+                                                a.setText("Hello " + login.getText().toString() + " !");
+                                                a.setTextSize(15);
 
-                                                @SuppressLint("RestrictedApi")
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // Sign in success, update UI with the signed-in user's information
-                                                        Log.d(TAG, "signInWithEmail:success");
-                                                        FirebaseUser user = mAuth.getCurrentUser();
-                                                        Toast.makeText(context, "Login successfully.",
-                                                                Toast.LENGTH_SHORT).show();
-                                                        updateUI(user);
-                                                        view.findViewById(R.id.loginButton).setVisibility(View.GONE);
-                                                        view.findViewById(R.id.editTextUsername).setVisibility(View.GONE);
-                                                        view.findViewById(R.id.editTextPassword).setVisibility(View.GONE);
-                                                        view.findViewById(R.id.disconnectButton).setVisibility(View.VISIBLE);
-                                                        TextView a = view.findViewById(R.id.loginTitle);
-                                                        a.setText("Hello " + login.getText().toString() + " !");
-                                                        a.setTextSize(15);
+                                            } else {
+                                                // If sign in fails, display a message to the user.
+                                                Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                                updateUI(null);
+                                            }
+                                        });
 
-                                                    } else {
-                                                        // If sign in fails, display a message to the user.
-                                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                                        Toast.makeText(context, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                                        updateUI(null);
-                                                    }
-                                                }
-                                            });
-
-                                }
                             }
                         });
 
@@ -109,12 +89,12 @@ public class AccountFragment extends Fragment {
             if(currentUser != null){
                 Toast.makeText(context, "Disconnect Successfully !", Toast.LENGTH_SHORT).show();
                 FirebaseAuth.getInstance().signOut();
-                view.findViewById(R.id.loginButton).setVisibility(view.VISIBLE);
+                view.findViewById(R.id.loginButton).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.editTextUsername).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.editTextPassword).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.disconnectButton).setVisibility(View.GONE);
                 TextView a = view.findViewById(R.id.loginTitle);
-                a.setText("Login / Register");
+                a.setText(R.string.log_in_register);
                 a.setTextSize(30);
             }
             else {
@@ -134,9 +114,6 @@ public class AccountFragment extends Fragment {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null){
-
-        }
     }
 
 }
