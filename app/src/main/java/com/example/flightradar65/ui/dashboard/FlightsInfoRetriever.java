@@ -1,9 +1,12 @@
 package com.example.flightradar65.ui.dashboard;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,10 +14,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flightradar65.R;
+import com.example.flightradar65.RetrofitAPI;
+import com.example.flightradar65.RetrofitClientLogo;
 import com.example.flightradar65.data.Dataset;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetriever.ViewHolder> {
     private Dataset mDataset;
+    private DataSnapshot airlinesLogos;
+    DatabaseReference databaseReference;
+    RetrofitAPI service = RetrofitClientLogo.createService(RetrofitAPI.class);
 
     public FlightsInfoRetriever() {
     }
@@ -27,8 +45,14 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+        databaseReference = FirebaseDatabase.getInstance("https://my-project-app-366214-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/");
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        databaseReference.child("AirlinesLogos").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                airlinesLogos = task.getResult();
+
+            }
+        });
         return new ViewHolder(view);
     }
 
@@ -69,6 +93,26 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
             holder.flightAirline.setText(mDataset.getResponse().get(position).getAirlineIcao() + " " + getFlagEmoji(mDataset.getResponse().get(position).getFlag()));
             holder.flightAirframe.setText(String.valueOf(mDataset.getResponse().get(position).getAircraftIcao()));
             holder.flightAltitude.setText(String.valueOf(mDataset.getResponse().get(position).getAlt()));
+            String urlLogo = searchForLogo(mDataset.getResponse().get(position).getAirlineIata());
+            Call<ResponseBody> callAsync = service.getApiResponseLogo(urlLogo);
+            callAsync.enqueue(new Callback<ResponseBody>() {
+                                  @Override
+                                  public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                                      if (response.isSuccessful()) {
+                                          if (response.body() != null) {
+                                              // display the image data in a ImageView or save it
+                                              Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
+                                              holder.addFavoriteImg.setImageBitmap(bmp);
+                                          }
+                                      }
+                                  }
+
+                                  @Override
+                                  public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+
+                                  }
+                              }
+            );
         }
 
         holder.flightDep.setOnClickListener(view -> Toast.makeText(holder.flightDep.getContext(), "clicked on " +holder.flightDep.getText(), Toast.LENGTH_LONG).show());
@@ -84,6 +128,8 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
     public int getItemCount() {
         if(mDataset == null){
             return 10;
+        }else if(mDataset.getResponse().size()>100){
+            return 100;
         }
         return mDataset.getResponse().size();
     }
@@ -101,6 +147,7 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
         public final TextView flightAirframeString;
         public final TextView flightAltitude;
         public final TextView flightAltitudeString;
+        public final ImageView addFavoriteImg;
 
         public ViewHolder(View view) {
             super(view);
@@ -116,6 +163,7 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
             flightAirframeString = view.findViewById(R.id.airframeString);
             flightAltitude = view.findViewById(R.id.altitude);
             flightAltitudeString = view.findViewById(R.id.altitudeString);
+            addFavoriteImg = view.findViewById(R.id.imageViewAirline);
         }
 
         @NonNull
@@ -123,5 +171,13 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
         public String toString() {
             return super.toString() + " '" + flightNo.getText() + "'";
         }
+    }
+    public String searchForLogo(String airline) {
+        for (DataSnapshot airlinesLogo: airlinesLogos.getChildren()) {
+            if(Objects.requireNonNull(airlinesLogo.child("id").getValue()).toString().equals(airline)){
+                return Objects.requireNonNull(airlinesLogo.child("logo").getValue()).toString().replace("https://images.kiwi.com/", "");
+            }
+        }
+        return "Couldn't find logo";
     }
 }

@@ -2,10 +2,11 @@ package com.example.flightradar65;
 
 import com.example.flightradar65.data.Dataset;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
-
 
 
 public interface RetrofitAPI {
@@ -28,6 +29,8 @@ public interface RetrofitAPI {
     Call<Dataset> getApiResponseDepIcao(@Query("dep_icao") String depIcao);
     @GET("api/v9/flights?api_key="+API_KEY)
     Call<Dataset> getApiResponseArrIcao(@Query("arr_icao") String arrIcao);
+    @GET("{file}")
+    Call<ResponseBody> getApiResponseLogo(@Path("file") String file);
 
 
 }
