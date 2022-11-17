@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "794728515563",
+    "firebase_url": "https://my-project-app-366214-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "my-project-app-366214",
+    "storage_bucket": "my-project-app-366214.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794728515563:android:7fea78897c7af1efccbbae",
+        "android_client_info": {
+          "package_name": "com.example.flightradar65"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "794728515563-l7shav88nlrt6m2qe10ech78576ec63k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABoMOF_e71UaV9qWnZhPMXK6U-wEVFGp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "794728515563-l7shav88nlrt6m2qe10ech78576ec63k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

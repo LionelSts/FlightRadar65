@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "hex",
@@ -30,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "status"
 })
 
-public class ApiResponse {
+public class ApiResponse implements Serializable {
 
     @JsonProperty("hex")
     private String hex;

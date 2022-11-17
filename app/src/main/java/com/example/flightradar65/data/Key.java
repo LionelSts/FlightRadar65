@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
@@ -17,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "limits_total"
 })
 
-public class Key {
+public class Key implements Serializable {
 
     @JsonProperty("id")
     private int id;
