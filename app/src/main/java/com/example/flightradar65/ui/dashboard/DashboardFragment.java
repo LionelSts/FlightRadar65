@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +21,7 @@ import com.example.flightradar65.R;
 import com.example.flightradar65.RetrofitAPI;
 import com.example.flightradar65.RetrofitClient;
 import com.example.flightradar65.data.Dataset;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -49,6 +49,8 @@ public class DashboardFragment extends Fragment {
     ) {
         Context context = requireActivity().getApplicationContext();
         viewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        username = mAuth.getUid();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         Spinner spinnerCategories = view.findViewById(R.id.spinnerSearch);

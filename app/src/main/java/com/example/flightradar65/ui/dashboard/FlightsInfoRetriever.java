@@ -17,6 +17,7 @@ import com.example.flightradar65.R;
 import com.example.flightradar65.RetrofitAPI;
 import com.example.flightradar65.RetrofitClientLogo;
 import com.example.flightradar65.data.Dataset;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,6 +48,8 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        username = mAuth.getUid();
         databaseReference = FirebaseDatabase.getInstance("https://my-project-app-366214-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/");
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         databaseReference.child("AirlinesLogos").get().addOnCompleteListener(task -> {

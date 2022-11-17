@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.StyleSpan;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -48,6 +49,7 @@ import retrofit2.Response;
 
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     private Dataset searchDataset;
+
     LatLng planePos = new LatLng(0, 0);
     float planeHead = 0;
     String planeName = "Default Name";
@@ -71,6 +73,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         // Initialize view
         View view=inflater.inflate(R.layout.fragment_map, container, false);
