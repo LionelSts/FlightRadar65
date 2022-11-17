@@ -1,19 +1,20 @@
 package com.example.flightradar65.ui.dashboard;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.flightradar65.data.Dataset;
+
 public class DashboardViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private final MutableLiveData<Dataset> mDataset = new MutableLiveData<>();
 
-    public DashboardViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+
+    public MutableLiveData<Dataset> getDataset() {
+        return mDataset;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void loadDataset(Dataset dataset) {
+        mDataset.setValue(dataset);
     }
 }
