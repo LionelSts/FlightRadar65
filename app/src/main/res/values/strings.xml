@@ -30,4 +30,5 @@
     <string name="alias_flight">FR650</string>
     <string name="alias_altitude">0</string>
     <string name="airline_logo">Airline logo</string>
+    <string name="favorite">Favorite :</string>
 </resources>

@@ -10,8 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -34,6 +32,8 @@ public class DashboardFragment extends Fragment {
     private SearchView searchView;
     private DashboardViewModel viewModel;
     FlightsInfoRetriever recyclerAdapter;
+    FavInfoRetriever recyclerAdapterFav;
+    String username = "augustinmariage@studentjuniacom";
     String[] categories = {"No filter","ICAO24 Hex address", "Aircraft Registration number", "Airline ICAO code", "Airline Country ISO 2 code", "Flight ICAO code-number", "Flight number", "Departure Airport ICAO code", "Arrival Airport ICAO code"};
     RetrofitAPI service = RetrofitClient.createService(RetrofitAPI.class);
 
@@ -86,28 +86,20 @@ public class DashboardFragment extends Fragment {
             public void onResponse(@NonNull Call<Dataset> call, @NonNull Response<Dataset> response) {
                 Dataset dataset = response.body();
                 recyclerAdapter.loadDataset(dataset);
-                // databaseReference.child("Dataset").child("v1").setValue(dataset);
-                Toast.makeText(context, "Data acquired", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(@NonNull Call<Dataset> call, @NonNull Throwable throwable) {
                 System.out.println(throwable);
-                Toast.makeText(context, "Data not acquired", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        TextView textView = view.findViewById(R.id.textViewTest);
-        databaseReference.child("Airportsv2").child("0").child("LFPG").child("coordinates").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
-            }
-            else {
-                Toast.makeText(getContext(), "Got response", Toast.LENGTH_LONG).show();
-                textView.setText(String.valueOf(task.getResult()));
             }
         });
 
+        RecyclerView recyclerViewFav = view.findViewById(R.id.RecyclerViewFav);
+        recyclerViewFav.setHasFixedSize(true);
+        recyclerViewFav.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerAdapterFav = new FavInfoRetriever();
+        recyclerViewFav.setAdapter(recyclerAdapterFav);
+        recyclerAdapterFav.loadFav();
         return view;
     }
 

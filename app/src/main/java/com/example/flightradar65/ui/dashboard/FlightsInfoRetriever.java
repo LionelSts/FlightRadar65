@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import okhttp3.ResponseBody;
@@ -33,6 +34,7 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
     private DataSnapshot airlinesLogos;
     DatabaseReference databaseReference;
     RetrofitAPI service = RetrofitClientLogo.createService(RetrofitAPI.class);
+    String username = "augustinmariage@studentjuniacom";
 
     public FlightsInfoRetriever() {
     }
@@ -50,7 +52,6 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
         databaseReference.child("AirlinesLogos").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 airlinesLogos = task.getResult();
-
             }
         });
         return new ViewHolder(view);
@@ -102,11 +103,10 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
                                           if (response.body() != null) {
                                               // display the image data in a ImageView or save it
                                               Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
-                                              holder.addFavoriteImg.setImageBitmap(bmp);
+                                              holder.airlineImg.setImageBitmap(bmp);
                                           }
                                       }
                                   }
-
                                   @Override
                                   public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
 
@@ -115,13 +115,62 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
             );
         }
 
-        holder.flightDep.setOnClickListener(view -> Toast.makeText(holder.flightDep.getContext(), "clicked on " +holder.flightDep.getText(), Toast.LENGTH_LONG).show());
+        holder.flightDep.setOnClickListener(view -> {
+            databaseReference.child("Fav").child(username).child("flightDep").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    HashMap<String,String> userDepFav = new HashMap<>();
+                    if(task.getResult().getValue() != null){
+                        userDepFav = (HashMap<String, String>) task.getResult().getValue();
+                    }
+                    userDepFav.put((String) holder.flightDep.getText(),(String) holder.flightDep.getText());
+                    databaseReference.child("Fav").child(username).child("flightDep").setValue(userDepFav);
+                }
+            });
+            Toast.makeText(holder.flightAirline.getContext(), "Favorite Departure added " + holder.flightDep.getText(), Toast.LENGTH_LONG).show();
+        });
 
-        holder.flightNo.setOnClickListener(view -> Toast.makeText(holder.flightNo.getContext(), "clicked on " +holder.flightNo.getText(), Toast.LENGTH_LONG).show());
+        holder.flightNo.setOnClickListener(view -> {
+            databaseReference.child("Fav").child(username).child("flightNo").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    HashMap<String,String> userDepFav = new HashMap<>();
+                    if(task.getResult().getValue() != null){
+                        userDepFav = (HashMap<String, String>) task.getResult().getValue();
+                    }
+                    userDepFav.put((String) holder.flightNo.getText(),(String) holder.flightNo.getText());
+                    databaseReference.child("Fav").child(username).child("flightNo").setValue(userDepFav);
+                }
+            });
+            Toast.makeText(holder.flightAirline.getContext(), "Favorite Flight number added " + holder.flightNo.getText(), Toast.LENGTH_LONG).show();
 
-        holder.flightArr.setOnClickListener(view -> Toast.makeText(holder.flightArr.getContext(), "clicked on " +holder.flightArr.getText(), Toast.LENGTH_LONG).show());
+        });
 
-        holder.flightAirline.setOnClickListener(view -> Toast.makeText(holder.flightAirline.getContext(), "clicked on " +mDataset.getResponse().get(position).getAirlineIcao() , Toast.LENGTH_LONG).show());
+        holder.flightArr.setOnClickListener(view -> {
+            databaseReference.child("Fav").child(username).child("flightArr").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    HashMap<String,String> userDepFav = new HashMap<>();
+                    if(task.getResult().getValue() != null){
+                        userDepFav = (HashMap<String, String>) task.getResult().getValue();
+                    }
+                    userDepFav.put((String) holder.flightArr.getText(),(String) holder.flightArr.getText());
+                    databaseReference.child("Fav").child(username).child("flightArr").setValue(userDepFav);
+                }
+            });
+            Toast.makeText(holder.flightAirline.getContext(), "Favorite Arrival added " + holder.flightArr.getText(), Toast.LENGTH_LONG).show();
+        });
+
+        holder.flightAirline.setOnClickListener(view -> {
+            databaseReference.child("Fav").child(username).child("flightAirline").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    HashMap<String,String> userDepFav = new HashMap<>();
+                    if(task.getResult().getValue() != null){
+                        userDepFav = (HashMap<String, String>) task.getResult().getValue();
+                    }
+                    userDepFav.put(mDataset.getResponse().get(position).getAirlineIcao(),mDataset.getResponse().get(position).getAirlineIcao());
+                    databaseReference.child("Fav").child(username).child("flightAirline").setValue(userDepFav);
+                }
+            });
+            Toast.makeText(holder.flightAirline.getContext(), "Favorite airline added " + mDataset.getResponse().get(position).getAirlineIcao(), Toast.LENGTH_LONG).show();
+        });
     }
 
     @Override
@@ -147,7 +196,7 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
         public final TextView flightAirframeString;
         public final TextView flightAltitude;
         public final TextView flightAltitudeString;
-        public final ImageView addFavoriteImg;
+        public final ImageView airlineImg;
 
         public ViewHolder(View view) {
             super(view);
@@ -163,7 +212,7 @@ public class FlightsInfoRetriever extends RecyclerView.Adapter<FlightsInfoRetrie
             flightAirframeString = view.findViewById(R.id.airframeString);
             flightAltitude = view.findViewById(R.id.altitude);
             flightAltitudeString = view.findViewById(R.id.altitudeString);
-            addFavoriteImg = view.findViewById(R.id.imageViewAirline);
+            airlineImg = view.findViewById(R.id.imageViewAirline);
         }
 
         @NonNull
