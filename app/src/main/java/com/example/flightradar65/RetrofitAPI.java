@@ -29,7 +29,7 @@ public interface RetrofitAPI {
     Call<Dataset> getApiResponseDepIcao(@Query("dep_icao") String depIcao);
     @GET("api/v9/flights?api_key="+API_KEY)
     Call<Dataset> getApiResponseArrIcao(@Query("arr_icao") String arrIcao);
-    @GET("{file}")
+    @GET("airlines/64/{file}")
     Call<ResponseBody> getApiResponseLogo(@Path("file") String file);
 
 

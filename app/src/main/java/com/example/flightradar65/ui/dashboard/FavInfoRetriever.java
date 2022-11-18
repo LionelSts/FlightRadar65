@@ -37,7 +37,6 @@ import retrofit2.Response;
 public class FavInfoRetriever extends RecyclerView.Adapter<FavInfoRetriever.ViewHolder> {
     List<ApiResponse> cleanData = new ArrayList<>();
     private DataSnapshot userFav;
-    private DataSnapshot airlinesLogos;
     DatabaseReference databaseReference;
     RetrofitAPI serviceLogo = RetrofitClientLogo.createService(RetrofitAPI.class);
     RetrofitAPI service = RetrofitClient.createService(RetrofitAPI.class);
@@ -55,18 +54,13 @@ public class FavInfoRetriever extends RecyclerView.Adapter<FavInfoRetriever.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        username = mAuth.getUid();
+        if(mAuth.getUid()!=null) username = mAuth.getUid();
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         databaseReference = FirebaseDatabase.getInstance("https://my-project-app-366214-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/");
         databaseReference.child("Fav").child(username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 userFav = task.getResult();
                 loadAllDataset();
-            }
-        });
-        databaseReference.child("AirlinesLogos").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                airlinesLogos = task.getResult();
             }
         });
         return new ViewHolder(view);
@@ -196,7 +190,7 @@ public class FavInfoRetriever extends RecyclerView.Adapter<FavInfoRetriever.View
             holder.flightAirline.setText(cleanData.get(position).getAirlineIcao() + " " + getFlagEmoji(cleanData.get(position).getFlag()));
             holder.flightAirframe.setText(String.valueOf(cleanData.get(position).getAircraftIcao()));
             holder.flightAltitude.setText(String.valueOf(cleanData.get(position).getAlt()));
-            String urlLogo = searchForLogo(cleanData.get(position).getAirlineIata());
+            String urlLogo = cleanData.get(position).getAirlineIata()+".png";
             Call<ResponseBody> callAsync = serviceLogo.getApiResponseLogo(urlLogo);
             callAsync.enqueue(new Callback<ResponseBody>() {
                                   @Override
@@ -329,13 +323,5 @@ public class FavInfoRetriever extends RecyclerView.Adapter<FavInfoRetriever.View
         public String toString() {
             return super.toString() + " '" + flightNo.getText() + "'";
         }
-    }
-    public String searchForLogo(String airline) {
-        for (DataSnapshot airlinesLogo: airlinesLogos.getChildren()) {
-            if(Objects.requireNonNull(airlinesLogo.child("id").getValue()).toString().equals(airline)){
-                return Objects.requireNonNull(airlinesLogo.child("logo").getValue()).toString().replace("https://images.kiwi.com/", "");
-            }
-        }
-        return "Couldn't find logo";
     }
 }
