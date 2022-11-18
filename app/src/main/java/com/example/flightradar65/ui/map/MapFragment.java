@@ -3,7 +3,6 @@ package com.example.flightradar65.ui.map;
 import static java.lang.Double.parseDouble;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.StyleSpan;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -156,12 +154,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public boolean onMarkerClick(@NonNull Marker marker) {
         final String[][] depInfos = new String[2][2];
         String[][] arrInfos = new String[2][2];
-        String[] infos = new String[4];
+        String[] infos = {"LFPG","LFPG","0","0"};
         if(Objects.requireNonNull(marker.getTag()).getClass().equals(String.class)){
             infos[0]= (String) marker.getTag();
         }else if(Objects.requireNonNull(marker.getTag()).getClass().equals(String[].class)){
-            infos = (String[]) marker.getTag();
-            String[] finalInfos = infos;
+            String[] tags = (String[]) marker.getTag();
+            // on évite les valeurs nuls
+            for (int i =0;i < tags.length;i++) {
+                if(tags[i]!=null)infos[i] = tags[i];
+            }
             mapFragment.getMapAsync(googleMap -> {
                 if(pathPolyline[0] != null){
                     for (Polyline polyline:pathPolyline) {
@@ -175,69 +176,88 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                     }
                     pathMarker = new Marker[2];
                 }
-                assert finalInfos != null;
-                databaseReference.child("Airportsv2").child("0").child(finalInfos[0]).child("coordinates").get().addOnCompleteListener(task -> {
+                databaseReference.child("Airportsv2").child("0").child(infos[0]).child("coordinates").get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        depInfos[0] = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
+                        if(task.getResult().getValue()==null){      // Si le résultat n'existe pas, on le remplace
+                            depInfos[0] = new String[]{"0", "0"};
+                            infos[0] = "LFPG";
+
+                        }else{
+                            depInfos[0] = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
+                        }
                     }
                 });
-                databaseReference.child("Airportsv2").child("0").child(finalInfos[1]).child("coordinates").get().addOnCompleteListener(task -> {
+                databaseReference.child("Airportsv2").child("0").child(infos[1]).child("coordinates").get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        arrInfos[0] = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
+                        if(task.getResult().getValue()==null){
+                            arrInfos[0] = new String[]{"0", "0"};
+                            infos[1] = "LFPG";
+
+                        }else {
+                            arrInfos[0] = Objects.requireNonNull(task.getResult().getValue()).toString().split(", ");
+                        }
                     }
                 });
-                databaseReference.child("Airportsv2").child("0").child(finalInfos[0]).child("name").get().addOnCompleteListener(task -> {
+                databaseReference.child("Airportsv2").child("0").child(infos[0]).child("name").get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        depInfos[1][0] = Objects.requireNonNull(task.getResult().getValue()).toString();
+                        if(task.getResult().getValue()==null){
+                            depInfos[1][0] = "Unknown airport";
+                            infos[1] = "LFPG";
+
+                        }else {
+                            depInfos[1][0] = Objects.requireNonNull(task.getResult().getValue()).toString();
+                        }
                     }
                 });
-                databaseReference.child("Airportsv2").child("0").child(finalInfos[1]).child("name").get().addOnCompleteListener(task -> {
+                databaseReference.child("Airportsv2").child("0").child(infos[1]).child("name").get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Toast.makeText(getContext(), "Error getting data", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        arrInfos[1][0] = Objects.requireNonNull(task.getResult().getValue()).toString();
+                        if(task.getResult().getValue()==null){
+                            arrInfos[1][0] = "Unknown airport";
+                            infos[1] = "LFPG";
+
+                        }else {
+                            arrInfos[1][0] = Objects.requireNonNull(task.getResult().getValue()).toString();
+                        }
                         Objects.requireNonNull( pathMarker[0] = googleMap.addMarker(
                                 new MarkerOptions()
                                         .position(new LatLng(parseDouble(depInfos[0][1]), parseDouble(depInfos[0][0])))
-                                        .title(finalInfos[0])
+                                        .title(infos[0])
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.airport))
                                         .snippet(depInfos[1][0]))).setTag("path");
 
                         Objects.requireNonNull(pathMarker[1] = googleMap.addMarker(
                                 new MarkerOptions()
                                         .position(new LatLng(parseDouble(arrInfos[0][1]), parseDouble(arrInfos[0][0])))
-                                        .title(finalInfos[1])
+                                        .title(infos[1])
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.airport))
                                         .snippet(arrInfos[1][0]))).setTag("path");
 
                         List<PatternItem> pattern = Arrays.asList(
                                 new Dot(), new Gap(20), new Dash(30), new Gap(20));
 
-                        PolylineOptions polylineOptions1 = new PolylineOptions()
-                                .add(new LatLng(parseDouble(depInfos[0][1]), parseDouble(depInfos[0][0])))
-                                .addSpan(new StyleSpan(Color.MAGENTA))
-                                .add(new LatLng(parseDouble(finalInfos[2]), parseDouble(finalInfos[3])))
-                                .geodesic(true);
-
-                        PolylineOptions polylineOptions2 = new PolylineOptions()
-                                .add(new LatLng(parseDouble(finalInfos[2]), parseDouble(finalInfos[3])))
-                                .addSpan(new StyleSpan(Color.BLUE))
+                        pathPolyline[0] = googleMap.addPolyline(new PolylineOptions()
+                                .add(new LatLng(parseDouble(infos[2]), parseDouble(infos[3])))
                                 .add(new LatLng(parseDouble(arrInfos[0][1]), parseDouble(arrInfos[0][0])))
-                                .geodesic(true);
-
-                        pathPolyline[0] = googleMap.addPolyline(polylineOptions2);
+                                .geodesic(true));
                         pathPolyline[0].setPattern(pattern);
                         pathPolyline[0].setTag("path");
 
-                        pathPolyline[1] = googleMap.addPolyline(polylineOptions1);
+                        pathPolyline[1] = googleMap.addPolyline(new PolylineOptions()
+                                .add(new LatLng(parseDouble(depInfos[0][1]), parseDouble(depInfos[0][0])))
+                                .add(new LatLng(parseDouble(infos[2]), parseDouble(infos[3])))
+                                .geodesic(true));
                         pathPolyline[1].setTag("path");
                     }
                 });

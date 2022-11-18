@@ -44,13 +44,13 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         Context context = requireActivity().getApplicationContext();
         viewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        username = mAuth.getUid();
+        if(mAuth.getUid()!=null) username = mAuth.getUid();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         Spinner spinnerCategories = view.findViewById(R.id.spinnerSearch);
